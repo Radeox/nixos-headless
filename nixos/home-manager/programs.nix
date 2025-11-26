@@ -12,6 +12,7 @@
         prettybat
       ];
     };
+
     # Ranger configuration
     ranger = {
       enable = true;
@@ -22,10 +23,5 @@
         map dd shell mv %s ~/.local/share/Trash/files/
       '';
     };
-  };
-
-  services = {
-    # MegaSync configuration
-    megasync.enable = true;
   };
 }

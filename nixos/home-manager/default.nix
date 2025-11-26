@@ -1,13 +1,10 @@
 { ... }:
 {
   imports = [
-    ./ghostty.nix
     ./git.nix
-    ./hyprland
     ./neovim.nix
     ./programs.nix
     ./shell.nix
-    ./zed.nix
   ];
 
   # Enable Home Manager

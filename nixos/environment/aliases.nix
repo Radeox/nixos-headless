@@ -2,12 +2,11 @@
 {
   environment.shellAliases = {
     # NixOS commands
-    nix-update = "sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild switch --upgrade --accept-flake-config --flake /etc/nixos && flatpak update -y";
+    nix-update = "sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild switch --upgrade --accept-flake-config --flake /etc/nixos";
     nix-config = "cd /etc/nixos && vim";
     nix-clean = "sudo nix-store --gc && sudo nix-collect-garbage -d && sudo nixos-rebuild boot";
 
     # Aliases
-    ai = "aichat";
     d = "lazydocker";
     dc = "docker compose";
     g = "lazygit";
@@ -17,7 +16,6 @@
     rgrep = "rg";
     sl = "ls";
     sudo = "sudo ";
-    z = "zeditor .";
 
     # Basic commands
     cat = "bat -p";

@@ -9,32 +9,20 @@
     fd
     ffmpeg
     fzf
-    gparted
     grc
     home-manager
     htop
-    imagemagick
     killall
-    mpv
-    nautilus
-    nautilus-python
     nil
     nix-search-cli
     nmap
     pciutils
-    qogir-icon-theme
-    quickemu
     rar
-    remmina
     ripgrep
-    rpiboot
-    scrcpy
-    simple-scan
     speedtest-cli
     sshfs
     udiskie
     unzip
-    veracrypt
     wget
     whois
     wl-clipboard

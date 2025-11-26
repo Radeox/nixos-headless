@@ -70,13 +70,6 @@
   # Enable TRIM for SSDs
   services.fstrim.enable = lib.mkDefault true;
 
-  # Add vaapi driver
-  hardware.graphics.extraPackages = with pkgs; [
-    intel-vaapi-driver
-    libva-vdpau-driver
-    libvdpau-va-gl
-  ];
-
   # SSH server
   services.openssh = {
     enable = true;

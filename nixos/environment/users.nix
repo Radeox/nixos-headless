@@ -6,7 +6,6 @@
       isNormalUser = true;
       description = "Radeox";
       extraGroups = [
-        "adbusers"
         "dialout"
         "docker"
         "kvm"
