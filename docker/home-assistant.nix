@@ -21,12 +21,26 @@
       autoStart = true;
     };
 
-    # DuckDNS
-    duckdns = {
-      image = "lscr.io/linuxserver/duckdns:latest";
+    # SSH Tunnel for Home Assistant
+    ssh-tunnel-homeassistant = {
+      image = "docker.io/kroniak/ssh-client:latest";
 
-      environmentFiles = [
-        "/etc/duckdns/.env"
+      cmd = [
+        "ssh"
+        "-N"
+        "-o"
+        "StrictHostKeyChecking=no"
+        "-o"
+        "ServerAliveInterval=60"
+        "-o"
+        "ServerAliveCountMax=3"
+        "-R"
+        "28123:localhost:8123"
+        "radeox@radeox.it"
+      ];
+
+      volumes = [
+        "/root/.ssh:/root/.ssh:ro"
       ];
 
       extraOptions = [
@@ -37,33 +51,7 @@
     };
   };
 
-  # Lets encrypt
-  services.nginx = {
-    enable = true;
-    recommendedProxySettings = true;
-
-    virtualHosts."sblumbo.duckdns.org" = {
-      forceSSL = true;
-      enableACME = true;
-
-      extraConfig = ''
-        proxy_buffering off;
-      '';
-
-      locations."/" = {
-        proxyPass = "http://[::1]:8123";
-        proxyWebsockets = true;
-      };
-    };
-  };
-
-  # ACME
-  security.acme = {
-    acceptTerms = true;
-    defaults.email = "dawid.weglarz95@gmail.com";
-  };
-
-  # Periodically update HomeAssistant + DuckDNS
+  # Periodically update HomeAssistant
   systemd = {
     timers.home-assistant-update = {
       wantedBy = [ "timers.target" ];
@@ -79,9 +67,6 @@
       script = ''
         /run/current-system/sw/bin/docker pull docker.io/homeassistant/home-assistant:latest
         systemctl restart docker-homeassistant.service
-
-        /run/current-system/sw/bin/docker pull lscr.io/linuxserver/duckdns:latest
-        systemctl restart docker-duckdns.service
 
         /run/current-system/sw/bin/docker system prune -f
       '';
