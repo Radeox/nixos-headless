@@ -44,14 +44,11 @@
             # My NixOS configuration
             ./environment
             ./hardware
-            ./docker
             ./software
+            ./system
 
-            # Home Assistant + DuckDNS + Lets encrypt
-            ./docker/home-assistant.nix
-
-            # Jellyfin
-            ./docker/jellyfin.nix
+            # Docker containers
+            ./docker
 
             # Host specific configuration
             ./hosts/b-dell.nix

@@ -1,7 +1,10 @@
 { pkgs, ... }:
 {
   environment.systemPackages = with pkgs; [
+    ansible
     borgbackup
+    cargo
+    cmake
     dig
     duf
     dust
@@ -9,6 +12,11 @@
     fd
     ffmpeg
     fzf
+    gcc
+    git
+    git-extras
+    github-copilot-cli
+    gnumake
     grc
     home-manager
     htop
@@ -21,6 +29,7 @@
     ripgrep
     speedtest-cli
     sshfs
+    tree-sitter
     udiskie
     unzip
     wget
