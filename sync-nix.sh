@@ -143,7 +143,7 @@ push_nix_config() {
 		echo -e "${YELLOW}Launching nix-update...${NC}"
 
 		# Alias: nix-update
-		sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild switch --upgrade --accept-flake-config --flake /etc/nixos && flatpak update -y
+		sudo nix flake update --flake /etc/nixos && sudo nixos-rebuild switch --upgrade --accept-flake-config --flake /etc/nixos
 	fi
 }
 
