@@ -1,3 +1,3 @@
-# Radeox dotfiles
+# NixOS configuration
 
-Here I keep my NixOS and my astrovim configs (for now) :D
+This is my desktop NixOS configuration which i currently use on my desktop and laptop.

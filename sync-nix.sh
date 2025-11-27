@@ -9,19 +9,51 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
+# Files to ignore during sync
+IGNORED_FILES=("sync-nix.sh" "LICENSE" "README.md" ".gitignore" ".git")
+
+# Check if file should be ignored
+should_ignore() {
+	local filename=$(basename "$1")
+	for ignored in "${IGNORED_FILES[@]}"; do
+		if [ "$filename" = "$ignored" ]; then
+			return 0
+		fi
+	done
+	return 1
+}
+
 # Pull nix-config from /etc/nixos to repo
 pull_nix_config() {
 	echo -e "${YELLOW}Pulling nix-config from /etc/nixos...${NC}"
 
-	if [ -d /etc/nixos ]; then
-		rm -rf nixos
-		cp -r /etc/nixos .
-		rm nixos/flake.lock
-		echo -e "${GREEN}✓ nix-config pulled successfully${NC}"
-	else
+	if [ ! -d /etc/nixos ]; then
 		echo -e "${RED}✗ Error: /etc/nixos directory not found${NC}"
 		return 1
 	fi
+
+	# Remove existing config files (except ignored ones)
+	for item in /etc/nixos/*; do
+		local basename_item=$(basename "$item")
+		if ! should_ignore "$basename_item" && [ "$basename_item" != "flake.lock" ]; then
+			local target="./$basename_item"
+			if [ -e "$target" ]; then
+				echo -e "${YELLOW}Removing existing $basename_item...${NC}"
+				rm -rf "$target"
+			fi
+		fi
+	done
+
+	# Copy files from /etc/nixos (except ignored ones and flake.lock)
+	for item in /etc/nixos/*; do
+		local basename_item=$(basename "$item")
+		if ! should_ignore "$basename_item" && [ "$basename_item" != "flake.lock" ]; then
+			echo -e "${YELLOW}Copying $basename_item...${NC}"
+			cp -r "$item" "./"
+		fi
+	done
+
+	echo -e "${GREEN}✓ nix-config pulled successfully${NC}"
 }
 
 # Push nix-config from repo to /etc/nixos
@@ -29,14 +61,7 @@ push_nix_config() {
 	echo -e "${YELLOW}Pushing nix-config to /etc/nixos...${NC}"
 
 	COMMIT_FILE="/etc/nixos/.commit"
-	REPO_NIXOS="./nixos"
 	SHOULD_UPDATE=false
-
-	# Check if repo nixos directory exists
-	if [ ! -d "$REPO_NIXOS" ]; then
-		echo -e "${RED}✗ Error: ./nixos directory not found in repo${NC}"
-		return 1
-	fi
 
 	# Check if .commit file exists
 	if [ ! -f "$COMMIT_FILE" ]; then
@@ -47,8 +72,15 @@ push_nix_config() {
 		SHORT_COMMIT=$(git rev-parse --short HEAD 2>/dev/null || echo "unknown")
 		echo "$SHORT_COMMIT" >"$COMMIT_FILE"
 
-		# Copy new config to /etc/nixos
-		cp -r "$REPO_NIXOS"/* /etc/nixos/
+		# Copy config files to /etc/nixos (excluding ignored files)
+		for item in ./*; do
+			local basename_item=$(basename "$item")
+			if ! should_ignore "$basename_item"; then
+				echo -e "${YELLOW}Copying $basename_item to /etc/nixos...${NC}"
+				cp -r "$item" /etc/nixos/
+			fi
+		done
+
 		echo -e "${GREEN}✓ .commit file created with: $SHORT_COMMIT${NC}"
 		echo -e "${GREEN}✓ nix-config pushed to /etc/nixos${NC}"
 		SHOULD_UPDATE=true
@@ -64,7 +96,15 @@ push_nix_config() {
 			echo -e "${GREEN}✓ Commit hashes match ($CURRENT_COMMIT)${NC}"
 			echo -e "${YELLOW}Checking for changes in /etc/nixos...${NC}"
 
-			DIFF_OUTPUT=$(diff -r "$REPO_NIXOS" /etc/nixos --exclude=.commit --exclude=flake.lock 2>&1 || true)
+			# Build exclude options for diff
+			EXCLUDE_OPTS=""
+			for ignored in "${IGNORED_FILES[@]}"; do
+				EXCLUDE_OPTS="$EXCLUDE_OPTS --exclude=$ignored"
+			done
+			EXCLUDE_OPTS="$EXCLUDE_OPTS --exclude=.commit --exclude=flake.lock"
+
+			# Compare current directory with /etc/nixos
+			DIFF_OUTPUT=$(diff -r . /etc/nixos $EXCLUDE_OPTS 2>&1 || true)
 
 			if [ -n "$DIFF_OUTPUT" ]; then
 				echo -e "${RED}✗ Differences found between repo and /etc/nixos:${NC}"
@@ -83,8 +123,15 @@ push_nix_config() {
 			# Update the commit file with current commit
 			echo "$CURRENT_COMMIT" >"$COMMIT_FILE"
 
-			# Copy new config to /etc/nixos
-			cp -r "$REPO_NIXOS"/* /etc/nixos/
+			# Copy config files to /etc/nixos (excluding ignored files)
+			for item in ./*; do
+				local basename_item=$(basename "$item")
+				if ! should_ignore "$basename_item"; then
+					echo -e "${YELLOW}Copying $basename_item to /etc/nixos...${NC}"
+					cp -r "$item" /etc/nixos/
+				fi
+			done
+
 			echo -e "${GREEN}✓ .commit file updated to: $CURRENT_COMMIT${NC}"
 			echo -e "${GREEN}✓ nix-config pushed to /etc/nixos${NC}"
 			SHOULD_UPDATE=true
