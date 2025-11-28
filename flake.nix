@@ -6,7 +6,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Manage dotfiles
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    home-manager.url = "github:nix-community/home-manager/master";
 
     # Secure boot
     lanzaboote.url = "github:nix-community/lanzaboote/v0.4.3";
