@@ -16,7 +16,7 @@
         "ServerAliveCountMax=3"
         "-R"
         "28022:localhost:2222"
-        "radeox@radeox.it"
+        "radeox@home.radeox.it"
       ];
 
       volumes = [
