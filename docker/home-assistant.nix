@@ -22,25 +22,18 @@
     };
 
     # SSH Tunnel for Home Assistant
-    ssh-tunnel-homeassistant = {
-      image = "docker.io/kroniak/ssh-client:latest";
+    homeassistant-tunnel = {
+      image = "docker.io/jnovack/autossh:latest";
 
-      cmd = [
-        "ssh"
-        "-N"
-        "-o"
-        "StrictHostKeyChecking=no"
-        "-o"
-        "ServerAliveInterval=60"
-        "-o"
-        "ServerAliveCountMax=3"
-        "-R"
-        "28123:localhost:8123"
-        "radeox@home.radeox.it"
-      ];
+      environment = {
+        SSH_REMOTE_USER = "radeox";
+        SSH_REMOTE_HOST = "server.radeox.it";
+        SSH_TUNNEL_PORT = "28123";
+        SSH_TARGET_PORT = "8123";
+      };
 
       volumes = [
-        "/root/.ssh:/root/.ssh:ro"
+        "/home/radeox/.ssh/id_rsa:/id_rsa:ro"
       ];
 
       extraOptions = [
