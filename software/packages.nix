@@ -2,7 +2,6 @@
 {
   environment.systemPackages = with pkgs; [
     ansible
-    borgbackup
     cargo
     cmake
     dig
@@ -10,12 +9,10 @@
     dust
     fastfetch
     fd
-    ffmpeg
     fzf
     gcc
     git
     git-extras
-    github-copilot-cli
     gnumake
     grc
     home-manager
@@ -34,7 +31,6 @@
     unzip
     wget
     whois
-    wl-clipboard
     zip
   ];
 }
