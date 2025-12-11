@@ -26,6 +26,7 @@
     ripgrep
     speedtest-cli
     sshfs
+    tmux
     tree-sitter
     udiskie
     unzip
