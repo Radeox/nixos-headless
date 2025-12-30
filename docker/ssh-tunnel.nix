@@ -13,7 +13,7 @@
       };
 
       volumes = [
-        "/home/radeox/.ssh/id_rsa:/id_rsa:ro"
+        "/home/radeox/.ssh/id_ed25519:/id_rsa:ro"
       ];
 
       extraOptions = [
