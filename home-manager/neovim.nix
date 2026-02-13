@@ -13,7 +13,7 @@
     withPython3 = true;
 
     # Setup init.lua
-    extraLuaConfig = ''
+    initLua = ''
       local lazypath = vim.env.LAZY or vim.fn.stdpath "data" .. "/lazy/lazy.nvim"
       if not (vim.env.LAZY or (vim.uv or vim.loop).fs_stat(lazypath)) then
         -- stylua: ignore

@@ -9,6 +9,6 @@
       "nixpkgs"
       "--commit-lock-file"
     ];
-    dates = "weekly";
+    dates = "daily";
   };
 }
