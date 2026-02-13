@@ -10,6 +10,10 @@
         SSH_REMOTE_HOST = "server.radeox.it";
         SSH_TUNNEL_PORT = "28022";
         SSH_TARGET_PORT = "22";
+
+        # Check connection health
+        AUTOSSH_GATETIME = "0";
+        AUTOSSH_POLL = "60";
       };
 
       volumes = [
