@@ -14,6 +14,6 @@
   home = {
     username = "radeox";
     homeDirectory = "/home/radeox";
-    stateVersion = "25.05";
+    stateVersion = "26.05";
   };
 }
