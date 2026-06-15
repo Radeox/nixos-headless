@@ -12,7 +12,7 @@
     g = "lazygit";
     ll = "ls -l";
     p = "ps aux | grep ";
-    r = "ranger";
+    x = "yazi";
     rgrep = "rg";
     sl = "ls";
     sudo = "sudo ";

@@ -32,6 +32,7 @@
     unzip
     wget
     whois
+    yazi
     zip
   ];
 }
