@@ -1,8 +1,8 @@
-{ pkgs
-, config
-, lib
-, modulesPath
-, ...
+{
+  config,
+  lib,
+  modulesPath,
+  ...
 }:
 {
   # Hostname
@@ -58,7 +58,7 @@
     ];
   };
 
-  swapDevices = [{ device = "/dev/disk/by-uuid/a1cdc93e-c7f5-49eb-94ce-20168fb08297"; }];
+  swapDevices = [ { device = "/dev/disk/by-uuid/a1cdc93e-c7f5-49eb-94ce-20168fb08297"; } ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

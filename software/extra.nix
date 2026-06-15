@@ -17,4 +17,11 @@
     # Other stuff
     dconf.enable = true;
   };
+
+  # Docker config
+  virtualisation = {
+    docker.enable = true;
+    containers.enable = true;
+    oci-containers.backend = "docker";
+  };
 }

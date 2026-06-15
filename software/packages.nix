@@ -5,6 +5,7 @@
     cargo
     cmake
     dig
+    docker-compose
     duf
     dust
     fastfetch
@@ -18,18 +19,23 @@
     home-manager
     htop
     killall
+    lazydocker
     nil
     nix-search-cli
     nmap
     pciutils
+    python314
     rar
     ripgrep
+    ruff
     speedtest-cli
     sshfs
     tmux
     tree-sitter
     udiskie
     unzip
+    uv
+    uv-sort
     wget
     whois
     yazi

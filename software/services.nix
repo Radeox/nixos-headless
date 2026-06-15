@@ -1,6 +1,14 @@
-{ pkgs, ... }:
+{ ... }:
 {
   services = {
+    # Setup syncthing
+    syncthing = {
+      enable = true;
+      openDefaultPorts = true;
+      user = "radeox";
+      configDir = "/home/radeox/.config/syncthing";
+    };
+
     # Enable Samba shares and other stuff
     gvfs.enable = true;
     dbus.enable = true;
