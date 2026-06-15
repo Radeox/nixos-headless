@@ -13,6 +13,8 @@
 
       extraOptions = [
         "--network=host"
+        "--device=/dev/dri/card0:/dev/dri/card0"
+        "--device=/dev/dri/renderD128:/dev/dri/renderD128"
       ];
 
       autoStart = true;
