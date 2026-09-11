@@ -3,7 +3,7 @@
   virtualisation.oci-containers.containers = {
     # Jellyfin
     jellyfin = {
-      image = "jellyfin/jellyfin:10";
+      image = "jellyfin/jellyfin:12";
 
       volumes = [
         "/etc/jellyfin-config:/config"
