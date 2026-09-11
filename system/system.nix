@@ -2,7 +2,7 @@
 {
   boot = {
     # Use 7.1 stock kernel
-    kernelPackages = pkgs.linuxPackages_7_1;
+    kernelPackages = pkgs.linuxPackages_7_2;
 
     # NTFS support
     supportedFilesystems = [ "ntfs" ];
