@@ -29,6 +29,9 @@
   # Use netbird client-side DNS resolution
   services.resolved.enable = true;
 
-  # Allow SSH exclusively on the NetBird private mesh interface
-  networking.firewall.interfaces."nb-wt0".allowedTCPPorts = [ 22 ];
+  # Ports open to Netbird interface
+  networking.firewall.interfaces."nb-wt0".allowedTCPPorts = [
+    22
+    8384
+  ];
 }

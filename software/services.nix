@@ -7,6 +7,7 @@
       openDefaultPorts = true;
       user = "radeox";
       configDir = "/home/radeox/.config/syncthing";
+      guiAddress = "0.0.0.0:8384";
     };
 
     # Enable Samba shares and other stuff
