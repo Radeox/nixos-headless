@@ -1,4 +1,5 @@
 {
+  pkgs,
   config,
   lib,
   modulesPath,
@@ -11,15 +12,18 @@
   imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
   boot = {
+    # Use stock kernel
+    kernelPackages = pkgs.linuxPackages_7_3;
+
+    # NTFS support
+    supportedFilesystems = [ "ntfs" ];
+
     kernelModules = [ "kvm-intel" ];
     extraModulePackages = [ ];
 
     initrd = {
       # TPM2
-      systemd = {
-        enable = true;
-        tpm2.enable = true;
-      };
+      systemd.tpm2.enable = true;
 
       # LUKS2
       luks.devices.cryptroot.device = "/dev/disk/by-uuid/c24c7c1c-87cf-453d-b4d1-8b78d0164d5d";
