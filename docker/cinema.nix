@@ -16,43 +16,81 @@ let
           display: flex;
           align-items: center;
           justify-content: center;
-          background: #0f1115;
-          font-family: system-ui, -apple-system, sans-serif;
-          padding: 1.5rem;
+          background:
+            radial-gradient(ellipse 80% 50% at 50% 0%, rgba(249, 115, 22, 0.16), transparent 65%),
+            radial-gradient(circle at 80% 100%, rgba(234, 88, 12, 0.08), transparent 50%),
+            linear-gradient(180deg, #12141a 0%, #090a0e 55%, #040406 100%);
+          font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+          padding: 2rem;
+          color: #f3f5f8;
         }
         .grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-          gap: 1rem;
+          grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+          gap: 1.25rem;
           width: 100%;
-          max-width: 560px;
+          max-width: 780px;
         }
         a {
+          position: relative;
+          aspect-ratio: 1 / 1;
           display: flex;
           flex-direction: column;
           align-items: center;
           justify-content: center;
-          gap: 0.25rem;
+          gap: 0.45rem;
           text-align: center;
-          padding: 1.15rem 1.25rem;
-          border-radius: 12px;
-          background: #1a1e26;
-          border: 1px solid #2b313e;
-          color: #eef1f6;
+          padding: 1.5rem;
+          border-radius: 20px;
+          background: linear-gradient(145deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
+          backdrop-filter: blur(16px);
+          -webkit-backdrop-filter: blur(16px);
+          border: 1px solid rgba(255, 255, 255, 0.09);
+          box-shadow:
+            0 10px 30px rgba(0, 0, 0, 0.45),
+            inset 0 1px 0 rgba(255, 255, 255, 0.09);
+          color: #f3f5f8;
           text-decoration: none;
-          font-size: 1.05rem;
+          font-size: 1.2rem;
           font-weight: 600;
-          transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+          letter-spacing: -0.015em;
+          transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+        a::before {
+          content: "";
+          width: 28px;
+          height: 3px;
+          border-radius: 999px;
+          background: rgba(249, 115, 22, 0.45);
+          margin-bottom: 0.35rem;
+          transition: width 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
         }
         a span {
-          font-size: 0.78rem;
+          font-size: 0.82rem;
           font-weight: 400;
-          color: #8c96a8;
+          color: #8f98a8;
+          letter-spacing: 0.01em;
+          transition: color 0.2s ease;
         }
         a:hover {
-          background: #252b36;
-          border-color: #4f8cff;
-          transform: translateY(-2px);
+          transform: translateY(-4px);
+          background: linear-gradient(145deg, rgba(249, 115, 22, 0.12), rgba(255, 255, 255, 0.03));
+          border-color: rgba(249, 115, 22, 0.55);
+          box-shadow:
+            0 16px 36px rgba(0, 0, 0, 0.6),
+            0 0 28px rgba(249, 115, 22, 0.16),
+            inset 0 1px 0 rgba(251, 146, 60, 0.3);
+        }
+        a:hover::before {
+          width: 42px;
+          background: #f97316;
+          box-shadow: 0 0 12px rgba(249, 115, 22, 0.7);
+        }
+        a:hover span {
+          color: #fdba74;
+        }
+        a:active {
+          transform: translateY(-1px);
         }
       </style>
     </head>
