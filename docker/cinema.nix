@@ -142,7 +142,17 @@ in
       openFirewall = false;
       serverConfig = {
         LegalNotice.Accepted = true;
-        BitTorrent.Session.DefaultSavePath = "/home/radeox/Storage/Downloads";
+        Preferences.WebUI = {
+          Username = "admin";
+          Password_PBKDF2 = ''"@ByteArray(rQsaq2Y9tOnG0EW2/EQHUQ==:BEpyYGVvMv95ciMQugBbJhvxw5oNbbAFVg8ZX9I1RJ2HCb/IPytB4m3Yp1e0l7wIGiBoqhODaePEktejaXsRJA==)"'';
+        };
+        BitTorrent.Session = {
+          DefaultSavePath = "/home/radeox/Storage/Downloads";
+          GlobalMaxRatio = 2; # Stop at 2.0 ratio
+          GlobalMaxSeedingMinutes = 10080; # Or after 7 days of seeding
+          GlobalMaxInactiveSeedingMinutes = 2880; # Or after 48 hours of inactivity
+          ShareLimitAction = "Remove"; # Remove torrent from list, keep files on disk
+        };
       };
     };
 
