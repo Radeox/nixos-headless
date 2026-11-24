@@ -174,38 +174,47 @@ in
     ];
   };
 
-  # Ensure shared directories exist on the same filesystem with setgid + group write
-  systemd.tmpfiles.rules = [
-    "d /home/radeox/Storage/Media 2775 radeox media -"
-    "d /home/radeox/Storage/Downloads 2775 radeox media -"
-  ];
-
-  # Periodically update Jellyfin & enforce UMask 0002 across the *arr stack
-  systemd = {
-    timers.jellyfin-update = {
-      wantedBy = [ "timers.target" ];
-      partOf = [ "jellyfin-update.service" ];
-      timerConfig = {
-        OnCalendar = "*-*-* 04:00:00";
-        Persistent = true;
+  # Shared directories, Jellyfin updater, and *arr sandboxing/UMask
+  systemd =
+    let
+      mediaServiceConfig = {
+        UMask = lib.mkForce "0002";
+        # Keep /home isolated while exposing only /home/radeox/Storage read-write
+        ProtectHome = lib.mkForce "tmpfs";
+        BindPaths = [ "/home/radeox/Storage" ];
       };
-    };
+    in
+    {
+      # Ensure shared directories exist on the same filesystem with setgid + group write
+      tmpfiles.rules = [
+        "d /home/radeox/Storage/Media 2775 radeox media -"
+        "d /home/radeox/Storage/Downloads 2775 radeox media -"
+      ];
 
-    services = {
-      jellyfin-update = {
-        serviceConfig.Type = "oneshot";
-        script = ''
-          /run/current-system/sw/bin/docker pull jellyfin/jellyfin:12
-          systemctl restart docker-jellyfin.service
-
-          /run/current-system/sw/bin/docker system prune -f
-        '';
+      timers.jellyfin-update = {
+        wantedBy = [ "timers.target" ];
+        partOf = [ "jellyfin-update.service" ];
+        timerConfig = {
+          OnCalendar = "*-*-* 04:00:00";
+          Persistent = true;
+        };
       };
 
-      sonarr.serviceConfig.UMask = lib.mkForce "0002";
-      radarr.serviceConfig.UMask = lib.mkForce "0002";
-      bazarr.serviceConfig.UMask = lib.mkForce "0002";
-      qbittorrent.serviceConfig.UMask = lib.mkForce "0002";
+      services = {
+        jellyfin-update = {
+          serviceConfig.Type = "oneshot";
+          script = ''
+            /run/current-system/sw/bin/docker pull jellyfin/jellyfin:12
+            systemctl restart docker-jellyfin.service
+
+            /run/current-system/sw/bin/docker system prune -f
+          '';
+        };
+
+        sonarr.serviceConfig = mediaServiceConfig;
+        radarr.serviceConfig = mediaServiceConfig;
+        bazarr.serviceConfig = mediaServiceConfig;
+        qbittorrent.serviceConfig = mediaServiceConfig;
+      };
     };
-  };
 }
