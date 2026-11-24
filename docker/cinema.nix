@@ -29,8 +29,11 @@ let
         }
         a {
           display: flex;
+          flex-direction: column;
           align-items: center;
           justify-content: center;
+          gap: 0.25rem;
+          text-align: center;
           padding: 1.15rem 1.25rem;
           border-radius: 12px;
           background: #1a1e26;
@@ -41,6 +44,11 @@ let
           font-weight: 600;
           transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
         }
+        a span {
+          font-size: 0.78rem;
+          font-weight: 400;
+          color: #8c96a8;
+        }
         a:hover {
           background: #252b36;
           border-color: #4f8cff;
@@ -50,13 +58,13 @@ let
     </head>
     <body>
       <main class="grid">
-        <a href="http://${netbirdIp}:8096">Jellyfin</a>
-        <a href="http://${netbirdIp}:5055">Seerr</a>
-        <a href="http://${netbirdIp}:8989">Sonarr</a>
-        <a href="http://${netbirdIp}:7878">Radarr</a>
-        <a href="http://${netbirdIp}:9696">Prowlarr</a>
-        <a href="http://${netbirdIp}:6767">Bazarr</a>
-        <a href="http://${netbirdIp}:8080">qBittorrent</a>
+        <a href="http://${netbirdIp}:8096">Jellyfin<span>Media server</span></a>
+        <a href="http://${netbirdIp}:5055">Seerr<span>Requests</span></a>
+        <a href="http://${netbirdIp}:8989">Sonarr<span>TV series</span></a>
+        <a href="http://${netbirdIp}:7878">Radarr<span>Movies</span></a>
+        <a href="http://${netbirdIp}:9696">Prowlarr<span>Indexers</span></a>
+        <a href="http://${netbirdIp}:6767">Bazarr<span>Subtitles</span></a>
+        <a href="http://${netbirdIp}:8080">qBittorrent<span>Downloads</span></a>
       </main>
     </body>
     </html>
