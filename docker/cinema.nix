@@ -151,7 +151,7 @@ in
           GlobalMaxRatio = 2; # Stop at 2.0 ratio
           GlobalMaxSeedingMinutes = 10080; # Or after 7 days of seeding
           GlobalMaxInactiveSeedingMinutes = 2880; # Or after 48 hours of inactivity
-          ShareLimitAction = "Remove"; # Remove torrent from list, keep files on disk
+          ShareLimitAction = "Stop"; # Stop torrent when limit is reached (Sonarr/Radarr handle removal after import)
         };
       };
     };
