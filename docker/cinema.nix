@@ -119,10 +119,17 @@ in
       openFirewall = false;
     };
 
-    # Media request manager (ex-Jellyseerr, port 5055)
+    # Media request manager (port 5055)
     seerr = {
       enable = true;
       port = 5055;
+      openFirewall = false;
+    };
+
+    # Flare solverr
+    flaresolverr = {
+      enable = true;
+      port = 8191;
       openFirewall = false;
     };
 
