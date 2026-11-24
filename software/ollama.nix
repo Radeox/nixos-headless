@@ -15,6 +15,9 @@
     ];
   };
 
+  # Open port 11434 for Ollama
+  networking.firewall.allowedTCPPorts = [ 11434 ];
+
   # Cli package
   environment.systemPackages = [ pkgs.ollama ];
 }

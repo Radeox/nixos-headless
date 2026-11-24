@@ -48,6 +48,9 @@
     };
   };
 
+  # Open port 8123 for Home Assistant
+  networking.firewall.allowedTCPPorts = [ 8123 ];
+
   # Periodically update HomeAssistant
   systemd = {
     timers.home-assistant-update = {

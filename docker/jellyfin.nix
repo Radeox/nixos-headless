@@ -19,33 +19,10 @@
 
       autoStart = true;
     };
-
-    # SSH Tunnel for Jellyfin
-    jellyfin-tunnel = {
-      image = "docker.io/jnovack/autossh:latest";
-
-      environment = {
-        SSH_REMOTE_USER = "radeox";
-        SSH_REMOTE_HOST = "server.radeox.it";
-        SSH_TUNNEL_PORT = "28096";
-        SSH_TARGET_PORT = "8096";
-
-        # Check connection health
-        AUTOSSH_GATETIME = "0";
-        AUTOSSH_POLL = "60";
-      };
-
-      volumes = [
-        "/home/radeox/.ssh/id_ed25519:/id_rsa:ro"
-      ];
-
-      extraOptions = [
-        "--network=host"
-      ];
-
-      autoStart = true;
-    };
   };
+
+  # Open port 8096 for Jellyfin
+  networking.firewall.allowedTCPPorts = [ 8096 ];
 
   # Periodically update Jellyfin
   systemd = {
@@ -61,7 +38,7 @@
     services.jellyfin-update = {
       serviceConfig.Type = "oneshot";
       script = ''
-        /run/current-system/sw/bin/docker pull jellyfin/jellyfin:10
+        /run/current-system/sw/bin/docker pull jellyfin/jellyfin:12
         systemctl restart docker-jellyfin.service
 
         /run/current-system/sw/bin/docker system prune -f

@@ -29,9 +29,8 @@
   # Use netbird client-side DNS resolution
   services.resolved.enable = true;
 
-  # Ports open to Netbird interface
+  # Ports open exclusively on NetBird interface
   networking.firewall.interfaces."nb-wt0".allowedTCPPorts = [
-    22
     8384
   ];
 }

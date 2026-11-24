@@ -86,9 +86,6 @@
     };
   };
 
-  # Turn off firewall
-  networking.firewall.enable = lib.mkForce false;
-
   # Add secondary storage
   environment.etc.crypttab = {
     mode = "0600";
