@@ -191,6 +191,8 @@ in
         Preferences.WebUI = {
           Username = "admin";
           Password_PBKDF2 = ''"@ByteArray(rQsaq2Y9tOnG0EW2/EQHUQ==:BEpyYGVvMv95ciMQugBbJhvxw5oNbbAFVg8ZX9I1RJ2HCb/IPytB4m3Yp1e0l7wIGiBoqhODaePEktejaXsRJA==)"'';
+          AuthSubnetWhitelistEnabled = true;
+          AuthSubnetWhitelist = "100.105.0.0/16"; # Bypass auth for NetBird peers
         };
         BitTorrent.Session = {
           DefaultSavePath = "/home/radeox/Storage/Downloads";
