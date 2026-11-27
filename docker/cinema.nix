@@ -168,10 +168,11 @@ in
       dependsOn = [ "lingarr-db" ];
 
       ports = [
-        "9876:9876"
+        "127.0.0.1:9877:9876"
       ];
 
       environment = {
+        TZ = "Europe/Rome";
         ASPNETCORE_URLS = "http://+:9876";
         DB_CONNECTION = "mysql";
         DB_HOST = "lingarr-db";
@@ -232,7 +233,7 @@ in
         general.port = 6767;
         translator = {
           translator_type = "lingarr";
-          lingarr_url = "http://127.0.0.1:9876";
+          lingarr_url = "http://127.0.0.1:9877";
         };
       };
       openFirewall = false;
@@ -285,6 +286,23 @@ in
         root = cinemaPortal;
         locations."/" = {
           index = "index.html";
+        };
+      };
+
+      # Proxy Lingarr on port 9876 so NetBird traffic hits host INPUT (avoiding Docker/NetBird FORWARD drops)
+      virtualHosts."lingarr" = {
+        listen = [
+          {
+            addr = "0.0.0.0";
+            port = 9876;
+          }
+        ];
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:9877";
+          proxyWebsockets = true;
+          extraConfig = ''
+            proxy_read_timeout 600s;
+          '';
         };
       };
     };
