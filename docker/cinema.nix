@@ -162,7 +162,28 @@ in
       autoStart = true;
     };
 
-    # Lingarr subtitle translation service (using local Ollama)
+    # LibreTranslate local translation engine (from Lingarr README compose)
+    libretranslate = {
+      image = "libretranslate/libretranslate:latest";
+
+      environment = {
+        LT_LOAD_ONLY = "en,it";
+        LT_DISABLE_WEB_UI = "true";
+      };
+
+      volumes = [
+        "/etc/libretranslate-data:/home/libretranslate/.local/share/argos-translate"
+      ];
+
+      extraOptions = [
+        "--network=lingarr"
+        "--health-cmd=./venv/bin/python scripts/healthcheck.py"
+      ];
+
+      autoStart = true;
+    };
+
+    # Lingarr subtitle translation service (using local LibreTranslate)
     lingarr = {
       image = "ghcr.io/lingarr-translate/lingarr:latest";
       dependsOn = [ "lingarr-db" ];
@@ -181,11 +202,9 @@ in
         DB_USERNAME = "lingarr";
         DB_PASSWORD = lingarrDbPassword;
 
-        # Use local Ollama instance (software/ollama.nix) via LocalAI OpenAI-compatible API
-        SERVICE_TYPE = "localai";
-        LOCAL_AI_ENDPOINT = "http://host.docker.internal:11434/v1/chat/completions";
-        LOCAL_AI_MODEL = "qwen3:4b-instruct";
-        LOCAL_AI_API_KEY = "ollama";
+        # Use local LibreTranslate container on the lingarr Docker network
+        SERVICE_TYPE = "libretranslate";
+        LIBRE_TRANSLATE_URL = "http://libretranslate:5000";
       };
 
       volumes = [
@@ -195,7 +214,6 @@ in
 
       extraOptions = [
         "--network=lingarr"
-        "--add-host=host.docker.internal:host-gateway"
         "--group-add=990"
       ];
 
@@ -346,6 +364,7 @@ in
       tmpfiles.rules = [
         "d /home/radeox/Storage/Media 2775 radeox media -"
         "d /home/radeox/Storage/Downloads 2775 radeox media -"
+        "d /etc/libretranslate-data 0777 root root -"
       ];
 
       timers.jellyfin-update = {
@@ -386,13 +405,18 @@ in
           requires = [ "docker-network-lingarr.service" ];
         };
 
+        docker-libretranslate = {
+          after = [ "docker-network-lingarr.service" ];
+          requires = [ "docker-network-lingarr.service" ];
+        };
+
         docker-lingarr = {
           after = [
             "docker-network-lingarr.service"
-            "ollama.service"
+            "docker-libretranslate.service"
           ];
           requires = [ "docker-network-lingarr.service" ];
-          wants = [ "ollama.service" ];
+          wants = [ "docker-libretranslate.service" ];
           preStart = lib.mkBefore ''
             healthy=0
             i=0
