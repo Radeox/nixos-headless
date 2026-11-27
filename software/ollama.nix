@@ -11,7 +11,7 @@
 
     # Preload models
     loadModels = [
-      "qwen3:4b"
+      "qwen3:4b-instruct"
     ];
   };
 

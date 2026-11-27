@@ -184,7 +184,7 @@ in
         # Use local Ollama instance (software/ollama.nix) via LocalAI OpenAI-compatible API
         SERVICE_TYPE = "localai";
         LOCAL_AI_ENDPOINT = "http://host.docker.internal:11434/v1/chat/completions";
-        LOCAL_AI_MODEL = "qwen3:4b";
+        LOCAL_AI_MODEL = "qwen3:4b-instruct";
         LOCAL_AI_API_KEY = "ollama";
       };
 
