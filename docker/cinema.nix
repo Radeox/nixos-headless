@@ -1,6 +1,7 @@
 { lib, pkgs, ... }:
 let
   netbirdIp = "100.105.30.102";
+  lingarrDbPassword = "lingarr-db-password";
 
   cinemaPortal = pkgs.writeTextDir "index.html" ''
     <!DOCTYPE html>
@@ -102,6 +103,7 @@ let
         <a href="http://${netbirdIp}:7878">Radarr<span>Movies</span></a>
         <a href="http://${netbirdIp}:9696">Prowlarr<span>Indexers</span></a>
         <a href="http://${netbirdIp}:6767">Bazarr<span>Subtitles</span></a>
+        <a href="http://${netbirdIp}:9876">Lingarr<span>Translation</span></a>
         <a href="http://${netbirdIp}:8080">qBittorrent<span>Downloads</span></a>
       </main>
     </body>
@@ -129,6 +131,71 @@ in
         "--group-add=990"
         "--device=/dev/dri/card0:/dev/dri/card0"
         "--device=/dev/dri/renderD128:/dev/dri/renderD128"
+      ];
+
+      autoStart = true;
+    };
+
+    # Lingarr MariaDB database (from Lingarr README compose)
+    lingarr-db = {
+      image = "mariadb:latest";
+
+      environment = {
+        MYSQL_DATABASE = "lingarr";
+        MYSQL_USER = "lingarr";
+        MYSQL_PASSWORD = lingarrDbPassword;
+        MYSQL_ROOT_PASSWORD = lingarrDbPassword;
+      };
+
+      volumes = [
+        "/etc/lingarr-db:/var/lib/mysql"
+      ];
+
+      extraOptions = [
+        "--network=lingarr"
+        "--health-cmd=mariadb $MYSQL_DATABASE -u$MYSQL_USER -p$MYSQL_PASSWORD -e 'SELECT 1;'"
+        "--health-interval=10s"
+        "--health-timeout=5s"
+        "--health-retries=5"
+      ];
+
+      autoStart = true;
+    };
+
+    # Lingarr subtitle translation service (using local Ollama)
+    lingarr = {
+      image = "ghcr.io/lingarr-translate/lingarr:latest";
+      dependsOn = [ "lingarr-db" ];
+
+      ports = [
+        "9876:9876"
+      ];
+
+      environment = {
+        ASPNETCORE_URLS = "http://+:9876";
+        DB_CONNECTION = "mysql";
+        DB_HOST = "lingarr-db";
+        DB_PORT = "3306";
+        DB_DATABASE = "lingarr";
+        DB_USERNAME = "lingarr";
+        DB_PASSWORD = lingarrDbPassword;
+
+        # Use local Ollama instance (software/ollama.nix) via LocalAI OpenAI-compatible API
+        SERVICE_TYPE = "localai";
+        LOCAL_AI_ENDPOINT = "http://host.docker.internal:11434/v1/chat/completions";
+        LOCAL_AI_MODEL = "qwen3:4b";
+        LOCAL_AI_API_KEY = "ollama";
+      };
+
+      volumes = [
+        "/home/radeox/Storage/Media:/media"
+        "/etc/lingarr-config:/app/config"
+      ];
+
+      extraOptions = [
+        "--network=lingarr"
+        "--add-host=host.docker.internal:host-gateway"
+        "--group-add=990"
       ];
 
       autoStart = true;
@@ -161,7 +228,13 @@ in
     bazarr = {
       enable = true;
       group = "media";
-      settings.general.port = 6767;
+      settings = {
+        general.port = 6767;
+        translator = {
+          translator_type = "lingarr";
+          lingarr_url = "http://127.0.0.1:9876";
+        };
+      };
       openFirewall = false;
     };
 
@@ -236,6 +309,7 @@ in
       8080 # qBittorrent WebUI
       8989 # Sonarr
       9696 # Prowlarr
+      9876 # Lingarr
     ];
   };
 
@@ -273,6 +347,50 @@ in
             systemctl restart docker-jellyfin.service
 
             /run/current-system/sw/bin/docker system prune -f
+          '';
+        };
+
+        docker-network-lingarr = {
+          serviceConfig = {
+            Type = "oneshot";
+            RemainAfterExit = true;
+          };
+          after = [ "docker.service" ];
+          requires = [ "docker.service" ];
+          script = ''
+            /run/current-system/sw/bin/docker network inspect lingarr >/dev/null 2>&1 || \
+              /run/current-system/sw/bin/docker network create lingarr
+          '';
+        };
+
+        docker-lingarr-db = {
+          after = [ "docker-network-lingarr.service" ];
+          requires = [ "docker-network-lingarr.service" ];
+        };
+
+        docker-lingarr = {
+          after = [
+            "docker-network-lingarr.service"
+            "ollama.service"
+          ];
+          requires = [ "docker-network-lingarr.service" ];
+          wants = [ "ollama.service" ];
+          preStart = lib.mkBefore ''
+            healthy=0
+            i=0
+            while [ "$i" -lt 30 ]; do
+              status=$(/run/current-system/sw/bin/docker inspect --format='{{.State.Health.Status}}' lingarr-db 2>/dev/null || echo "starting")
+              if [ "$status" = "healthy" ]; then
+                healthy=1
+                break
+              fi
+              i=$((i + 1))
+              sleep 2
+            done
+            if [ "$healthy" -ne 1 ]; then
+              echo "lingarr-db did not become healthy in time" >&2
+              exit 1
+            fi
           '';
         };
 

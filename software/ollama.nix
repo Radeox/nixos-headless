@@ -11,7 +11,7 @@
 
     # Preload models
     loadModels = [
-      "qwen2.5:3b"
+      "qwen3:4b"
     ];
   };
 
